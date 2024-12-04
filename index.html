@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator with Exponent and History</title>
+    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+    <style>
+        .calculator {
+            max-width: 320px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        #display {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+        }
+
+        button {
+            height: 3rem;
+        }
+
+        #history {
+            display: none;
+            max-height: 150px;
+            overflow-y: auto;
+            margin-top: 1rem;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <section class="calculator">
+            <input type="text" id="display" class="form-control" disabled>
+            <div class="buttons">
+                <button onclick="clearDisplay()" class="secondary">C</button>
+                <button onclick="appendValue('(')">(</button>
+                <button onclick="appendValue(')')">)</button>
+                <button onclick="appendValue('/')">/</button>
+                <button onclick="appendValue('7')">7</button>
+                <button onclick="appendValue('8')">8</button>
+                <button onclick="appendValue('9')">9</button>
+                <button onclick="appendValue('*')">*</button>
+                <button onclick="appendValue('4')">4</button>
+                <button onclick="appendValue('5')">5</button>
+                <button onclick="appendValue('6')">6</button>
+                <button onclick="appendValue('-')">-</button>
+                <button onclick="appendValue('1')">1</button>
+                <button onclick="appendValue('2')">2</button>
+                <button onclick="appendValue('3')">3</button>
+                <button onclick="appendValue('+')">+</button>
+                <button onclick="appendValue('0')" class="col-span-2">0</button>
+                <button onclick="appendValue('.')">.</button>
+                <button onclick="calculate()" class="contrast">=</button>                
+                <button onclick="toggleHistory()" class="secondary">H</button>
+            </div>
+            <div id="history" class="contrast">
+                <h5>Calculation History:</h5>
+                <ul id="historyList"></ul>
+            </div>
+        </section>
+    </main>
+    <script>
+        const history = [];
+
+        function appendValue(value) {
+            const display = document.getElementById('display');
+            display.value += value;
+        }
+
+        function clearDisplay() {
+            const display = document.getElementById('display');
+            display.value = '';
+        }
+
+        function calculate() {
+            const display = document.getElementById('display');
+            try {
+                const result = eval(display.value);
+                history.push(`${display.value} = ${result}`);
+                display.value = result;
+                updateHistory();
+            } catch (error) {
+                display.value = 'Error';
+            }
+        }
+
+        function updateHistory() {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '';
+            history.forEach(entry => {
+                const listItem = document.createElement('li');
+                listItem.textContent = entry;
+                historyList.appendChild(listItem);
+            });
+        }
+
+        function toggleHistory() {
+            const historyDiv = document.getElementById('history');
+            historyDiv.style.display = historyDiv.style.display === 'none' ? 'block' : 'none';
+        }
+    </script>
+</body>
+</html>
